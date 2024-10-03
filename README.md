@@ -1,6 +1,7 @@
 # RISCV-BlueDevil
+### RV32I 32-bit integer instruction set
 
-This is an implementation of the RISC-V processor architecture for the CCSU Capstone class. The intent is to create a design that will be scalable and viable for use in production.
+This is an implementation of the RISC-V processor architecture for the CCSU Capstone class. The intent is to create a design that will be scalable and viable for use in production. This branch implements the 32-bit RV32I integer instruction set in a non-pipelined manner.
 
 This processor is intended to be a real-time processor where each instruction has a predictible time to completion and should be used for applications requiring that predictibility. Additionally, while the design contained in this repository is intended to be deployed on a Xilinx Artix-7 FPGA, the processor core can be utilized anywhere with just a change in the top module to provide the requisite I/O interface.
 
