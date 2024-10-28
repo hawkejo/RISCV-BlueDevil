@@ -11,16 +11,21 @@
 // Tool Versions: 
 // Description: 
 // 
-// Dependencies: 
+// Dependencies:    rv32i.vh - Used to define parameters in central location
 // 
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+`include "rv32i.vh"
 
 module alu(
-
+    input alu_op_group
     );
+    
+    always_comb begin
+        case (alu_op_group)
+        endcase
+    end
 endmodule

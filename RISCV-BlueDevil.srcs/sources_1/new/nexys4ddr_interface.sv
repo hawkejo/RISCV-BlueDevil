@@ -23,4 +23,7 @@
 module nexys4ddr_interface(
 
     );
+    
+    cpu_main cpu0(
+    );
 endmodule
