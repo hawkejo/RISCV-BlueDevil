@@ -70,7 +70,7 @@
 `define ANDI                `NUM_OPERATIONS'h3
 `define ORI                 `NUM_OPERATIONS'h4
 `define XORI                `NUM_OPERATIONS'h5
-// Immediate Shift instructions
+// Shift instructions
 `define SLLI                `NUM_OPERATIONS'h0
 `define SRLI                `NUM_OPERATIONS'h1
 `define SRAI                `NUM_OPERATIONS'h2
