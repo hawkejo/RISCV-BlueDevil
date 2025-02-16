@@ -63,7 +63,7 @@ module alu(
             end
             `UI_INST: begin
                 case (op)
-                    `LUI: begin rd = {upper_imm, {12{1'b0}}};  pc_out = 0; end
+                    `LUI:   begin rd = {upper_imm, {12{1'b0}}};  pc_out = 0; end
                     `AUIPC: begin rd = ({upper_imm, {12{1'b0}}} + pc_in) & (~12'hFFF); 
                             pc_out = 0;
                             end
@@ -72,11 +72,28 @@ module alu(
             end
             `RR_INST: begin
                 case (op)
+                    `ADD:   begin rd = rs2 + rs1; pc_out = 0; end
+                    `SUB:   begin rd = rs2 - rs1; pc_out = 0; end
+                    `SLT: begin rd = ($signed(rs1) < $signed(rs2))?
+                        `XLEN'b1:`XLEN'b0; pc_out = 0; end
+                    `SLTU: begin rd = ($unsigned(rs1) < $unsigned(rs2))?
+                        `XLEN'b1:`XLEN'b0; pc_out = 0; end
                     default begin rd = ~(`XLEN'h4); pc_out = 0; end
                 endcase
             end
             `JMP_INST: begin
                 case (op)
+                    `JAL:   begin rd = pc_in + 4;
+                        pc_out = pc_in + {{(11){upper_imm[`UPPER_IMM_MAX_INDEX]}},
+                        upper_imm[`UPPER_IMM_MAX_INDEX-12:`UPPER_IMM_MAX_INDEX-19],
+                        upper_imm[`UPPER_IMM_MAX_INDEX-11],
+                        upper_imm[`UPPER_IMM_MAX_INDEX-1:`UPPER_IMM_MAX_INDEX-10],
+                        1'b0    // Holy moly that was ugly. Why can't they just use
+                        };      // the same encoding as the upper immediate isntruction?
+                        end
+                    `JALR:  begin rd = pc_in + 4;
+                        pc_out = rs1 + {sign_xt_low_imm[`MAX_XLEN_INDEX-1:0], 1'b0};
+                        end
                     default begin rd = ~(`XLEN'h8); pc_out = 0; end
                 endcase
             end
