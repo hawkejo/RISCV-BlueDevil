@@ -96,15 +96,17 @@
 `define BGE                 `NUM_OPERATIONS'h4
 `define BGEU                `NUM_OPERATIONS'h5
 // Load and store instructions
-`define LW                  `NUM_OPERATIONS'h0
-`define LWU                 `NUM_OPERATIONS'h1
-`define LH                  `NUM_OPERATIONS'h2
-`define LHU                 `NUM_OPERATIONS'h3
-`define LB                  `NUM_OPERATIONS'h4
-`define LBU                 `NUM_OPERATIONS'h5
-`define SW                  `NUM_OPERATIONS'h6
-`define SH                  `NUM_OPERATIONS'h7
-`define SB                  `NUM_OPERATIONS'h8
+//`define LD                  `NUM_OPERATIONS'h0 // Used only in 64-bit implementation
+`define LW                  `NUM_OPERATIONS'h1
+//`define LWU                 `NUM_OPERATIONS'h2 // Used only in 64-bit implementation
+`define LH                  `NUM_OPERATIONS'h3
+`define LHU                 `NUM_OPERATIONS'h4
+`define LB                  `NUM_OPERATIONS'h5
+`define LBU                 `NUM_OPERATIONS'h6
+//`define SD                  `NUM_OPERATIONS'h7 // Used only in 64-bit implementation
+`define SW                  `NUM_OPERATIONS'h8
+`define SH                  `NUM_OPERATIONS'h9
+`define SB                  `NUM_OPERATIONS'hA
 // Memory ordering and control instructions
 `define FENCE               `NUM_OPERATIONS'h0
 // Environment (system) call and breakpoint instructions
