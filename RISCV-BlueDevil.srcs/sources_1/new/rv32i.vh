@@ -91,6 +91,9 @@
 `define SUB                 `NUM_OPERATIONS'h1
 `define SLT                 `NUM_OPERATIONS'h2
 `define SLTU                `NUM_OPERATIONS'h3
+`define AND                 `NUM_OPERATIONS'h4
+`define OR                  `NUM_OPERATIONS'h5
+`define XOR                 `NUM_OPERATIONS'h6
 // Unconditional jump instructions
 `define JAL                 `NUM_OPERATIONS'h0
 `define JALR                `NUM_OPERATIONS'h1

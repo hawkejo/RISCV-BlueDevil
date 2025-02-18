@@ -60,7 +60,7 @@ module alu(
                     `ANDI: begin rd = rs1 & sign_xt_low_imm; end
                     `ORI: begin rd = rs1 | sign_xt_low_imm; end
                     `XORI: begin rd = rs1 ^ sign_xt_low_imm; end
-                    default begin rd = ~(`XLEN'h0); end
+                    default: begin rd = ~(`XLEN'h0); end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
@@ -75,7 +75,7 @@ module alu(
                     `SLL:  begin rd = rs1 << {rs2[4:0]}; end
                     `SRL:  begin rd = rs1 >> {rs2[4:0]}; end
                     `SRA:  begin rd = rs1 >>> {rs2[4:0]}; end
-                    default begin rd = ~(`XLEN'h1); end
+                    default: begin rd = ~(`XLEN'h1); end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
@@ -87,7 +87,7 @@ module alu(
                     `LUI:   begin rd = full_upper_imm; end
                     `AUIPC: begin rd = (full_upper_imm + pc_in) & (~12'hFFF); 
                         end
-                    default begin rd = ~(`XLEN'h2); end
+                    default: begin rd = ~(`XLEN'h2); end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
@@ -102,7 +102,10 @@ module alu(
                         `XLEN'b1:`XLEN'b0; end
                     `SLTU: begin rd = ($unsigned(rs1) < $unsigned(rs2))?
                         `XLEN'b1:`XLEN'b0; end
-                    default begin rd = ~(`XLEN'h4); end
+                    `AND:   begin rd = rs2 & rs1; end
+                    `OR:    begin rd = rs2 | rs1; end
+                    `XOR:   begin rd = rs2 ^ rs1; end
+                    default: begin rd = ~(`XLEN'h4); end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
@@ -122,7 +125,7 @@ module alu(
                     `JALR:  begin rd = pc_in + 4;
                         pc_out = rs1 + {sign_xt_low_imm[`MAX_XLEN_INDEX-1:0], 1'b0};
                         end
-                    default begin rd = ~(`XLEN'h8); pc_out = 0; end
+                    default: begin rd = ~(`XLEN'h8); pc_out = 0; end
                 endcase
             end
             `BNCH_INST: begin
@@ -154,7 +157,7 @@ module alu(
                         pc_in + {sign_xt_low_imm[`MAX_XLEN_INDEX-1:0], 1'b0} :
                         pc_in + `XLEN'h4;
                      end
-                    default begin pc_out = 0; rd = ~(`XLEN'h16); end
+                    default: begin pc_out = 0; rd = ~(`XLEN'h16); end
                 endcase
                 io_addr = 0;
                 ecall = 0;
@@ -188,7 +191,7 @@ module alu(
                     `SB: begin io_addr <= rs1 + sign_xt_low_imm;
                         rd = {24'h0, rs2[7:0]};
                     end
-                    default begin rd = ~(`XLEN'h32); end
+                    default: begin rd = ~(`XLEN'h32); end
                 endcase
                 pc_out = 0;
                 ecall = 0;
@@ -199,7 +202,7 @@ module alu(
                     `FENCE: begin
                         rd <= {fence_mode, 16'b0, fence_sig}; // Fence mode always in high bits,
                     end                                       // signals always in low bits.
-                    default begin rd = ~(`XLEN'h64); end      // Fence signal from instruction decoder.
+                    default: begin rd = ~(`XLEN'h64); end      // Fence signal from instruction decoder.
                 endcase
                 pc_out = 0;
                 io_addr = 0;
@@ -218,7 +221,7 @@ module alu(
                         ecall = 1'b0;
                         ebreak = 1'b1;
                     end
-                    default begin rd = ~(`XLEN'h128); end
+                    default: begin rd = ~(`XLEN'h128); end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
