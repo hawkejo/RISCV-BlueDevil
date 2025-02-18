@@ -1,22 +1,24 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Central Connecticut State University - CET 497/498 Capstone
+// Engineer: Joseph A. Hawker
 // 
 // Create Date: 10/14/2024 11:55:05 AM
-// Design Name: 
+// Design Name: RISC-V Integer ALU
 // Module Name: alu
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
+// Project Name: RISCV-BlueDevil
+// Target Devices: Nexys 4 DDR, Nexys A7, Nexys Video
+// Tool Versions: Vivado 2024.2.1
+// Description:     ALU implementing the base integer instruction set for the RV32I
+//              ISA.
 // 
 // Dependencies:    rv32i.vh - Used to define parameters in central location
 // 
-// Revision:
+// Revision: 0.1
+// Revision 0.1  - Base ALU created, but unverified. (JAH: 2025-02-17)
 // Revision 0.01 - File Created
-// Additional Comments:
-// 
+// Additional Comments: It is noted that ECALL and EBREAK are not fully implemented
+//              as a complete implementation depends on the Zicsr extension.
 //////////////////////////////////////////////////////////////////////////////////
 `include "rv32i.vh"
 
@@ -161,7 +163,7 @@ module alu(
             `LDST_INST: begin
                 case (op)
                     `LW: begin io_addr <= rs1 + sign_xt_low_imm;
-                        rd = mem_in;
+                        rd = {mem_in[31:0]};
                     end
                     `LH: begin io_addr <= rs1 + sign_xt_low_imm;
                         rd = {{16{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
@@ -204,7 +206,7 @@ module alu(
                 ecall = 0;
                 ebreak = 0;
             end
-            `SYS_INST: begin
+            `SYS_INST: begin // Not fully implemented in unprivileged architecture
                 case (op)
                     `ECALL: begin
                         rd = rs1;

@@ -45,6 +45,12 @@
 
 `define STARTUP_OFFSET      `XLEN'h00FF // The offset from the max possible address
                                     // for when the CPU boots up or is reset.
+
+/* 
+ * All of the following definitions are used as internal signal definitions.
+ * These are not to be used for the actual instruction encodings, which will
+ * be in a separate *.vh header file.
+ */ 
 // ALU definitions
 `define NUM_OP_GROUPS        9
 `define OP_GROUP_MAX_INDEX   3

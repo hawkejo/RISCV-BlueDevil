@@ -8,13 +8,14 @@
 // Module Name: register_file
 // Project Name: RISCV-BlueDevil
 // Target Devices: Nexys 4 DDR, Nexys Video
-// Tool Versions: Vivado 2024.1.2
+// Tool Versions: Vivado 2024.2.1
 // Description:     Dual-ported register file with independent program counter
 //              control. Nothing too fancy.
 // 
 // Dependencies:    rv32i.vh - Used to define parameters in central location
 // 
-// Revision:
+// Revision: 0.1
+// Revision 0.1  - Base register file created, but unverified. (JAH: 2025-02-17)
 // Revision 0.01 - File Created
 //////////////////////////////////////////////////////////////////////////////////
 `include "rv32i.vh"
@@ -24,9 +25,11 @@ module register_file(
     output reg[`MAX_XLEN_INDEX:0] pc,                       // Program counter output
     input [`MAX_XLEN_INDEX:0] rd_data, pc_write_data,       // Write data inputs
     input [`REG_MAX_ADDR:0] rs1_addr, rs2_addr, rd_addr,    // Register file addresses
-    input rfile_we, pc_we, pc_increment, rst, clk           // Control signals
+    input rfile_we, pc_we, pc_increment, rst, clk,          // Control signals
+    input ebreak_set, ebreak_clear                          // Signals for EBREAK instruction
 );
     reg [`MAX_XLEN_INDEX:0] register_file [0:`NUM_REGS-1];  // The register file itself
+    reg ebreak_state;                                       // Used for ebreak instruction
     
     // Initialize everything
     reg [`REG_MAX_ADDR+1:0] i;
@@ -74,4 +77,18 @@ module register_file(
         end
     end
     
+    always_ff @ (posedge clk, negedge rst) begin
+        if (~rst) begin
+            ebreak_state <= 1'b0;
+        end
+        else if (ebreak_set) begin
+            ebreak_state <= 1'b1;
+        end
+        else if (ebreak_clear) begin
+            ebreak_state <= 1'b0;
+        end
+        else begin
+            ebreak_state <= ebreak_state;
+        end
+    end
 endmodule
