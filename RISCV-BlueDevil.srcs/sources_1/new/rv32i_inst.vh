@@ -5,7 +5,7 @@
 `define LUI_INST             7'b0110111
 `define AUIPC_INST           7'b0010111
 `define JAL_INST             7'b1101111
-`define JALR_INST            7'b1101111
+`define JALR_INST            7'b1100111
 `define BRANCH_INST          7'b1100011
 `define LOAD_INST            7'b0000011
 `define STORE_INST           7'b0100011

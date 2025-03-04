@@ -23,7 +23,7 @@
 
 // Base definitions
 `define XLEN                32
-`define MAX_XLEN_INDEX      `XLEN-1
+`define MAX_XLEN_INDEX      31
 
 `ifdef RVxxI
     `define NUM_REGS        32
@@ -31,9 +31,9 @@
 `endif // RVxxI
 
 `define IALIGN_BYTES         4
-`define IALIGN              `IALIGN_BYTES * 8
+`define IALIGN              32
 `define IALIGN_MULTIPLIER    1
-`define ILEN_MAX            `IALIGN * `IALIGN_MULTIPLIER
+`define ILEN_MAX            32
 
 `define IMM_MAX_INDEX       11
 `define UPPER_IMM_LOW_INDEX 0

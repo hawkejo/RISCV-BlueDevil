@@ -97,15 +97,16 @@ initial begin
     end
     
     // Now read the written data asynchronous to the clock
-    $display("Reading data");
+    $display("Reading data from rs1");
     for (i = 0; i < `NUM_REGS; i=i+1) begin
-        #4 rs1_addr = i[`REG_MAX_ADDR:0];
-        rs2_addr = `NUM_REGS-1-i;
-        $display("rs1_addr: %h, rs1: %h", rs1_addr, rs1_data);
-        $display("rs2_addr: %h, rs2: %h", rs2_addr, rs2_data);
+        #5 rs1_addr = i[`REG_MAX_ADDR:0];
+        #5 $display("rs1_addr: %h, rs1: %h", rs1_addr, rs1_data);
     end
-    
-    #20 $finish;
+    $display("Reading data from rs2");
+    for (i = 0; i < `NUM_REGS; i=i+1) begin
+        #5 rs2_addr = i[`REG_MAX_ADDR:0];
+        #5 $display("rs2_addr: %h, rs2: %h", rs2_addr, rs2_data);
+    end
 end
 
 endmodule
