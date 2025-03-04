@@ -1,0 +1,10 @@
+0.7
+2020.2
+Dec 15 2024
+09:05:09
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.sim/sim_1/behav/xsim/glbl.v,1724786425,verilog,,,,glbl,,uvm,,,,,,
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sim_1/new/rv32i_regfile_tb_driver.sv,1741112990,systemVerilog,,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sim_1/new/rv32i_tb_top.sv,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/rv32i.vh,rv32i_regfile_tb_driver,,uvm,../../../../RISCV-BlueDevil.srcs/sources_1/new,,,,,
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sim_1/new/rv32i_tb_top.sv,1741103873,systemVerilog,,,,rv32i_tb_top,,uvm,../../../../RISCV-BlueDevil.srcs/sources_1/new,,,,,
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/register_file.sv,1741105039,systemVerilog,,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sim_1/new/rv32i_regfile_tb_driver.sv,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/rv32i.vh,register_file,,uvm,../../../../RISCV-BlueDevil.srcs/sources_1/new,,,,,
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/rv32i.vh,1741106177,systemVerilog,,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/register_file.sv,,,,uvm,../../../../RISCV-BlueDevil.srcs/sources_1/new,,,,,
+C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/rv32i_inst.vh,1739904340,systemVerilog,,C:/Users/hawkejo/Documents/Git/RISCV-BlueDevil/RISCV-BlueDevil.srcs/sources_1/new/rv32i.vh,,,,uvm,../../../../RISCV-BlueDevil.srcs/sources_1/new,,,,,

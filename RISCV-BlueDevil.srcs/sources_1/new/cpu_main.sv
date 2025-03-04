@@ -26,7 +26,7 @@
 module cpu_main(
     output [`MAX_XLEN_INDEX:0] io_addr,
     output [`MAX_XLEN_INDEX:0] mem_out,
-    output pc_out,
+    output [`MAX_XLEN_INDEX:0] pc_out,
     output [7:0] fence_sig, // Signals for memory ordering: PI, PO, PR, PW, SI, SO, SR, SW
     output [3:0] fence_mode,
     input [`MAX_XLEN_INDEX:0] mem_in,

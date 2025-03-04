@@ -33,12 +33,6 @@ module register_file(
     
     // Initialize everything
     reg [`REG_MAX_ADDR+1:0] i;
-    initial begin
-        for(i = 0; i < `NUM_REGS; i++) begin
-            register_file[i] <= `XLEN'h0;
-        end
-        pc <= (~`XLEN'h0 + `XLEN'h1) - `STARTUP_OFFSET;
-    end
     
     // Handle the outputs
     assign rs1_data = register_file[rs1_addr];
@@ -47,7 +41,7 @@ module register_file(
     // Now handle program counter. Note the output for the PC is always exposed.
     always_ff @ (posedge clk, negedge rst) begin
         if (~rst) begin
-            pc <= (~`XLEN'h0 + `XLEN'h1) - `STARTUP_OFFSET;
+            pc <= (~`XLEN'h0) - `STARTUP_OFFSET;
         end
         else if (clk) begin
             if (pc_we)
@@ -65,12 +59,16 @@ module register_file(
     // Finally, handle the rest of the register file
     always_ff @ (posedge clk, negedge rst) begin
         if (~rst) begin
-            for(i = 0; i < `NUM_REGS; i++) begin
+            for(i = 0; i < `NUM_REGS; i=i+1) begin
                 register_file[i] <= `XLEN'h0;
             end
         end
         else if (rfile_we) begin
-            register_file[rd_addr] <= rd_data;
+            if(rd_addr == 5'h00) begin // x0 is always 0
+                register_file[rd_addr] <= `XLEN'h0;
+            end else begin
+                register_file[rd_addr] <= rd_data;
+            end
         end
         else begin
             register_file[rd_addr] <= register_file[rd_addr];

@@ -29,10 +29,6 @@
     `define NUM_REGS        32
     `define REG_MAX_ADDR     4
 `endif // RVxxI
-`ifdef RVxxE
-    `define NUM_REGS        16
-    `define REG_MAX_ADDR     3
-`endif // RVxxE
 
 `define IALIGN_BYTES         4
 `define IALIGN              `IALIGN_BYTES * 8

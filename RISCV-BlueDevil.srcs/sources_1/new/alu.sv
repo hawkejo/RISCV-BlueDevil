@@ -127,6 +127,9 @@ module alu(
                         end
                     default: begin rd = ~(`XLEN'h8); pc_out = 0; end
                 endcase
+                io_addr = 0;
+                ecall = 0;
+                ebreak = 0;
             end
             `BNCH_INST: begin
                 rd = 0;
@@ -165,30 +168,30 @@ module alu(
             end
             `LDST_INST: begin
                 case (op)
-                    `LW: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `LW: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {mem_in[31:0]};
                     end
-                    `LH: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `LH: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {{16{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
                     end
-                    `LHU: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `LHU: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {16'h0, mem_in[15:0]};
                     end
-                    `LB: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `LB: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {{24{mem_in[15]}}, mem_in[7:0]};
                     end
-                    `LBU: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `LBU: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {24'h0, mem_in[7:0]};
                     end
                     // rd is always wired to the I/O pins on the processor and
                     // is controlled by the write enable signal from the instruction decoder
-                    `SW: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `SW: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = rs2;
                     end
-                    `SH: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `SH: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {16'h0, rs2[15:0]};
                     end
-                    `SB: begin io_addr <= rs1 + sign_xt_low_imm;
+                    `SB: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {24'h0, rs2[7:0]};
                     end
                     default: begin rd = ~(`XLEN'h32); end
@@ -200,7 +203,7 @@ module alu(
             `MEM_INST: begin
                 case (op)
                     `FENCE: begin
-                        rd <= {fence_mode, 16'b0, fence_sig}; // Fence mode always in high bits,
+                        rd = {fence_mode, 16'b0, fence_sig}; // Fence mode always in high bits,
                     end                                       // signals always in low bits.
                     default: begin rd = ~(`XLEN'h64); end      // Fence signal from instruction decoder.
                 endcase
@@ -229,6 +232,9 @@ module alu(
             default: begin
                 rd = `XLEN'h0;
                 pc_out = ~(`XLEN'b0);
+                io_addr = 0;
+                ecall = 1'b0;
+                ebreak = 1'b0;
             end
         endcase
     end
