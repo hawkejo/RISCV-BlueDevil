@@ -194,7 +194,10 @@ module alu(
                     `SB: begin io_addr = rs1 + sign_xt_low_imm;
                         rd = {24'h0, rs2[7:0]};
                     end
-                    default: begin rd = ~(`XLEN'h32); end
+                    default: begin
+                        rd = ~(`XLEN'h32);
+                        io_addr = `XLEN'h0;
+                    end
                 endcase
                 pc_out = 0;
                 ecall = 0;
@@ -224,7 +227,11 @@ module alu(
                         ecall = 1'b0;
                         ebreak = 1'b1;
                     end
-                    default: begin rd = ~(`XLEN'h128); end
+                    default: begin
+                        rd = ~(`XLEN'h128);
+                        ecall = 1'b0;
+                        ebreak = 1'b0;
+                    end
                 endcase
                 pc_out = 0;
                 io_addr = 0;
