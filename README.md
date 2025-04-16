@@ -5,4 +5,6 @@ This is an implementation of the RISC-V processor architecture for the CCSU Caps
 
 This processor is intended to be a real-time processor where each instruction has a predictible time to completion and should be used for applications requiring that predictibility. Additionally, while the design contained in this repository is intended to be deployed on a Xilinx Artix-7 FPGA, the processor core can be utilized anywhere with just a change in the top module to provide the requisite I/O interface.
 
-The project was done in the most recent version of Xilinx Vivado, which at the time of creation of this repository is at version 2024.2.1. To use Vivado with Github, reference the following documents provided by AMD (Xilinx) [here](https://adaptivesupport.amd.com/s/article/Revision-Control-with-a-Vivado-Project?language=en_US).
+The project was done in the most recent version of Xilinx Vivado, which at the time of creation of this repository is at version 2024.2.2. To use Vivado with Github, reference the following documents provided by AMD (Xilinx) [here](https://adaptivesupport.amd.com/s/article/Revision-Control-with-a-Vivado-Project?language=en_US). While Vivado does not support git commands natively, the repository can be cloned directly. If running synthesis, make sure the setting to allow incremental synthesis is disabled for the first run.
+
+The 32-bit architecture is unverified.
