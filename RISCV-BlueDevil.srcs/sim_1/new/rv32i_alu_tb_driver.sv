@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 10/14/2024 11:55:05 AM
+// Create Date: 03/04/2025 09:48:45 AM
 // Design Name: 
-// Module Name: register_file
+// Module Name: rv32i_alu_tb_driver
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module register_file(
+module rv32i_alu_tb_driver(
 
     );
 endmodule
