@@ -41,7 +41,7 @@ module register_file(
     // Now handle program counter. Note the output for the PC is always exposed.
     always_ff @ (posedge clk, negedge rst) begin
         if (~rst) begin
-            pc <= (~`XLEN'h0) - `STARTUP_OFFSET;
+            pc <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h4;
         end
         else if (clk) begin
             if (pc_we)
