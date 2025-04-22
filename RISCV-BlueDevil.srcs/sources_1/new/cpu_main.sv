@@ -25,12 +25,15 @@
 `include "rv32i_inst.vh"
 
 module cpu_main(
-    output [`MAX_XLEN_INDEX:0] io_addr,
+    output [`MAX_XLEN_INDEX:0] io_in_addr,
+    output [`MAX_XLEN_INDEX:0] io_out_addr,
     output [`MAX_XLEN_INDEX:0] mem_out,
     output [`MAX_XLEN_INDEX:0] pc_out,
     output [7:0] fence_sig, // Signals for memory ordering: PI, PO, PR, PW, SI, SO, SR, SW
     output [3:0] fence_mode,
+    output memory_we, memory_re,
     input [`MAX_XLEN_INDEX:0] mem_in,
+    input mem_ready,
     input [`IALIGN-1:0] instruction,
     input clk, rst,
     input ebreak_clear
@@ -42,26 +45,29 @@ module cpu_main(
     wire [`UPPER_IMM_MAX_INDEX:`UPPER_IMM_LOW_INDEX] upper_imm;
     
     wire [`REG_MAX_ADDR:0] rs1_addr, rs2_addr, rd_addr;
-    wire rfile_we, pc_we, pc_increment, memory_we, memory_re;
     
     wire [`OPS_MAX_INDEX:0] op;
     wire [`OP_GROUP_MAX_INDEX:0] op_group;
     
     wire ebreak_set;
+    wire is_invalid;
     
     assign mem_out = rd_data;
     
     // Instruction Fetch
     wire [`IALIGN:0] instruction_f_out;
     wire [`MAX_XLEN_INDEX:0] pc_next_f_in;
+    wire decode_invalid;
     
     fetch_pipeline pipe_f0(
         .ifetch_out(instruction_f_out),
         .pc_next_out(pc_out),
+        .decode_invalid(decode_invalid),
         .ifetch_in(instruction),
         .pc_next_in(pc_next_f_in),
         .clk(clk),
-        .rst(rst)
+        .rst(rst),
+        .invalid(is_invalid)
     );
     
     // Instruction Decode
@@ -92,25 +98,37 @@ module cpu_main(
         .instruction(instruction_f_out)
     );
     
+    wire [`REG_MAX_ADDR:0] rs1_addr_out, rs2_addr_out, rd_addr_dec_out;
+    wire rfile_we_dec_out, pc_we_dec_out, pc_increment_dec_out, memory_we_dec_out, memory_re_dec_out;
+    wire [`IMM_MAX_INDEX:0] low_imm_out;
+    wire [`OP_GROUP_MAX_INDEX:0] alu_op_group_out;
+    wire [`OPS_MAX_INDEX:0] op_out;
+    wire [`UPPER_IMM_MAX_INDEX:`UPPER_IMM_LOW_INDEX] upper_imm_out;
+    wire [7:0] fence_sig_dec_out;
+    wire [3:0] fence_mode_dec_out;
+    
+    wire [`IALIGN:0] instruction_d_out;
+    wire [`MAX_XLEN_INDEX:0] dec_current_pc_out;
+    
     decode_pipeline pipe_d0(
         // Pipeline signals
-        .rs1_addr_out(),
-        .rs2_addr_out(),
-        .rd_addr_out(),
-        .rfile_we_out(),
-        .pc_we_out(),
-        .pc_increment_out(),
-        .memory_we_out(),
-        .memory_re_out(),
-        .low_imm_out(),
-        .alu_op_group_out(),
-        .op_out(),
-        .upper_imm_out(),
-        .fence_sig_out(),
-        .fence_mode_out(),
+        .rs1_addr_out(rs1_addr_out),
+        .rs2_addr_out(rs2_addr_out),
+        .rd_addr_out(rd_addr_dec_out),
+        .rfile_we_out(rfile_we_dec_out),
+        .pc_we_out(pc_we_dec_out),
+        .pc_increment_out(pc_increment_dec_out),
+        .memory_we_out(memory_we_dec_out),
+        .memory_re_out(memory_re_dec_out),
+        .low_imm_out(low_imm_out),
+        .alu_op_group_out(alu_op_group_out),
+        .op_out(op_out),
+        .upper_imm_out(upper_imm_out),
+        .fence_sig_out(fence_sig_dec_out),
+        .fence_mode_out(fence_mode_dec_out),
         
-        .current_pc_out(),
-        .current_inst_out(),
+        .current_pc_out(dec_current_pc_out),
+        .current_inst_out(instruction_d_out),
         
         .rs1_addr_in(rs1_addr_in),
         .rs2_addr_in(rs2_addr_in),
@@ -133,38 +151,49 @@ module cpu_main(
         // Control signals
         .clk(clk),
         .rst(rst),  // Low asserted
-        .invalid(),
-        .stall()
+        .invalid(decode_invalid | is_invalid), // Determined by execute stage
+        .stall()    // Determined by execute stage
     ); // Phew...
     
+    assign memory_re = memory_re_dec_out;
+    
     // Instruction Execute
+    wire [`MAX_XLEN_INDEX:0] rs1, rs2;
+    wire ecall_out, ebreak_out;
+    
     alu arith0(
         .rd(),
         .pc_out(),
-        .io_addr(),
-        .ecall(),
-        .ebreak(),
-        .alu_op_group(),
-        .op(),
-        .rs1(),
-        .rs2(),
-        .low_imm(),
-        .pc_in(),
-        .mem_in(),
-        .upper_imm(),
-        .fence_sig(),
-        .fence_mode()
+        .io_in_addr(io_in_addr),
+        .io_out_addr(),
+        .ecall(ecall_out),
+        .ebreak(ebreak_out),
+        
+        .alu_op_group(alu_op_group_out),
+        .op(op_out),
+        .rs1(rs1),
+        .rs2(rs2),
+        .low_imm(low_imm_out),
+        .pc_in(dec_current_pc_out),
+        .mem_in(mem_in),
+        .upper_imm(upper_imm_out),
+        .fence_sig(fence_sig_dec_out),
+        .fence_mode(fence_mode_dec_out)
+    );
+    
+    // Pipeline control logic is in the execute stage!
+    execute_pipeline pipe_e0(
     );
     
     // Instruction Store
     register_file reg_file0(
-        .rs1_data(),
-        .rs2_data(),
+        .rs1_data(rs1),
+        .rs2_data(rs2),
         .pc(pc_next_f_in),
         .rd_data(),
         .pc_write_data(),
-        .rs1_addr(),
-        .rs2_addr(),
+        .rs1_addr(rs1_addr_out),
+        .rs2_addr(rs2_addr_out),
         .rd_addr(),
         .rfile_we(),
         .pc_we(),
@@ -172,9 +201,10 @@ module cpu_main(
         .rst(rst),
         .clk(clk),
         .ebreak_set(),
-        .ebreak_clear()
+        .ebreak_clear(ebreak_clear) // Signal not synchronized to clock!
     );
     
-    // Instruction Store
+    store_pipeline pipe_s0(
+    );
            
 endmodule
