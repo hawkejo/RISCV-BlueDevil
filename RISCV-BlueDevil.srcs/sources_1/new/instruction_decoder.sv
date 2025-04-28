@@ -21,8 +21,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
-`include "rv32i_inst.vh"
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module instruction_decoder(
     output reg[`REG_MAX_ADDR:0] rs1_addr, rs2_addr, rd_addr,

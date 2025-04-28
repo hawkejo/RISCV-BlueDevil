@@ -21,7 +21,7 @@
 // Additional Comments: More test cases should be implemented via loops to more
 //      thouroghly test the accuracy of the device.
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
+`include "rv64i.vh"
 
 module rv32i_regfile_tb_driver(
     output reg [`MAX_XLEN_INDEX:0]rs1_data, rs2_data, pc_out,

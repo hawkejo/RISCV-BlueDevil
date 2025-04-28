@@ -18,8 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
-`include "rv32i_inst.vh"
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module fetch_pipeline(
     output reg [`IALIGN-1:0] ifetch_out,

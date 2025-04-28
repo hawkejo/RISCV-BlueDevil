@@ -20,7 +20,7 @@
 // Additional Comments: It is noted that ECALL and EBREAK are not fully implemented
 //              as a complete implementation depends on the Zicsr extension.
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
+`include "rv64i.vh"
 
 module alu(
     output reg [`MAX_XLEN_INDEX:0] rd,          // Output value
