@@ -82,7 +82,7 @@ module decode_pipeline(
         upper_imm_out       <= 20'h0_0000;
         fence_sig_out       <= 8'b0000_0000;
         fence_mode_out      <= 4'b0000;
-        current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h4;
+        current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h4;
         current_inst_out    <= `IALIGN'h0000_0013;
     end
     
@@ -102,7 +102,7 @@ module decode_pipeline(
             upper_imm_out       <= 20'h0_0000;
             fence_sig_out       <= 8'b0000_0000;
             fence_mode_out      <= 4'b0000;
-            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h4;
+            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h4;
             current_inst_out    <= `IALIGN'h0000_0013;
         end
         else if(stall) begin
