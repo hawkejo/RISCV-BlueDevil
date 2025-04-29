@@ -71,13 +71,69 @@ module alu(
             end
             `SHIFT_INST: begin
                 case (op)
-                    `SLLI: begin rd = rs1 << {low_imm[4:0]}; end
-                    `SRLI: begin rd = rs1 >> {low_imm[4:0]}; end
-                    `SRAI: begin rd = rs1 >>> {low_imm[4:0]}; end
-                    `SLL:  begin rd = rs1 << {rs2[4:0]}; end
-                    `SRL:  begin rd = rs1 >> {rs2[4:0]}; end
-                    `SRA:  begin rd = rs1 >>> {rs2[4:0]}; end
+                    `SLLI: begin rd = rs1 << {low_imm[5:0]}; end
+                    `SRLI: begin rd = rs1 >> {low_imm[5:0]}; end
+                    `SRAI: begin rd = rs1 >>> {low_imm[5:0]}; end
+                    `SLL:  begin rd = rs1 << {rs2[5:0]}; end
+                    `SRL:  begin rd = rs1 >> {rs2[5:0]}; end
+                    `SRA:  begin rd = rs1 >>> {rs2[5:0]}; end
                     default: begin rd = ~(`XLEN'h1); end
+                endcase
+                pc_out = 0;
+                io_in_addr = 0;
+                io_out_addr = 0;
+                ecall = 0;
+                ebreak = 0;
+            end
+            `IMM_32_INST: begin
+                case (op)
+                    `ADDIW: begin
+                        rd[31:0] = rs1[31:0] + sign_xt_low_imm[31:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SLLIW: begin
+                        rd[31:0] = rs1[31:0] << low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRLIW: begin
+                        rd[31:0] = rs1[31:0] >> low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRAIW: begin
+                        rd[31:0] = rs1[31:0] >>> low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    default: begin rd = ~(`XLEN'h42); end
+                endcase
+                pc_out = 0;
+                io_in_addr = 0;
+                io_out_addr = 0;
+                ecall = 0;
+                ebreak = 0;
+            end
+            `RR_32_INST: begin
+                case (op)
+                    `ADDW: begin
+                        rd[31:0] = rs1[31:0] + rs2[31:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SUBW: begin
+                        rd[31:0] = rs1[31:0] - rs2[31:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SLLW: begin
+                        rd[31:0] = rs1[31:0] << rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRLW: begin
+                        rd[31:0] = rs1[31:0] >> rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRAW: begin
+                        rd[31:0] = rs1[31:0] >>> rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    default: begin rd = ~(`XLEN'h43); end
                 endcase
                 pc_out = 0;
                 io_in_addr = 0;

@@ -48,7 +48,7 @@
  * be in a separate *.vh header file.
  */ 
 // ALU definitions
-`define NUM_OP_GROUPS        9
+`define NUM_OP_GROUPS       11
 `define OP_GROUP_MAX_INDEX   3
 `define NUM_OPERATIONS      16
 `define OPS_MAX_INDEX        3
@@ -63,6 +63,10 @@
 `define LDST_INST           `NUM_OP_GROUPS'h6
 `define MEM_INST            `NUM_OP_GROUPS'h7
 `define SYS_INST            `NUM_OP_GROUPS'h8
+
+// RV64I specific instruction groups
+`define IMM_32_INST         `NUM_OP_GROUPS'h9
+`define RR_32_INST          `NUM_OP_GROUPS'hA
 
 // Instruction opcode declarations
 // Immediate instructions
@@ -117,5 +121,16 @@
 // Environment (system) call and breakpoint instructions
 `define ECALL               `NUM_OPERATIONS'h0
 `define EBREAK              `NUM_OPERATIONS'h1
+// 32-bit integer immediate instructions
+`define ADDIW               `NUM_OPERATIONS'h0
+`define SLLIW               `NUM_OPERATIONS'h1
+`define SRLIW               `NUM_OPERATIONS'h2
+`define SRAIW               `NUM_OPERATIONS'h3
+// 32-bit register-register instructions
+`define ADDW                `NUM_OPERATIONS'h0
+`define SUBW                `NUM_OPERATIONS'h1
+`define SLLW                `NUM_OPERATIONS'h2
+`define SRLW                `NUM_OPERATIONS'h3
+`define SRAW                `NUM_OPERATIONS'h4
 
 `endif //RV64I

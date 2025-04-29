@@ -227,9 +227,41 @@ module instruction_decoder(
             end
             `LOAD_INST: begin
                 case(funct3)
+                    `LD_INST: begin
+                        alu_op_group <= `LDST_INST;
+                        op <= `LD;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b1;
+                        low_imm <= instruction[31:20];
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
                     `LW_INST: begin
                         alu_op_group <= `LDST_INST;
                         op <= `LW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b1;
+                        low_imm <= instruction[31:20];
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                    `LWU_INST: begin
+                        alu_op_group <= `LDST_INST;
+                        op <= `LWU;
                         rs1_addr <= instruction[19:15];
                         rs2_addr <= 5'h0;
                         rd_addr <= instruction[11:7];
@@ -327,6 +359,22 @@ module instruction_decoder(
             end
             `STORE_INST: begin
                 case(funct3)
+                    `SD_INST: begin
+                        alu_op_group <= `LDST_INST;
+                        op <= `SD;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= instruction[24:20];
+                        rd_addr <= 5'h0;
+                        rfile_we <= 1'b0;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b1;
+                        memory_re <= 1'b0;
+                        low_imm <= {instruction[31:25],instruction[11:7]};
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                        end
                     `SW_INST: begin
                         alu_op_group <= `LDST_INST;
                         op <= `SW;
@@ -502,13 +550,13 @@ module instruction_decoder(
                         pc_increment <= 1'b1;
                         memory_we <= 1'b0;
                         memory_re <= 1'b0;
-                        low_imm <= {7'h00, instruction[24:20]};
+                        low_imm <= {7'h00, instruction[25:20]};
                         upper_imm <= 20'h0;
                         fence_sig <= 8'h00;
                         fence_mode <= 4'h0;
                     end
                     `SRI_INST: begin
-                        if (funct7 == `SRAI_INST) begin // SRAI
+                        if (funct7[6:1] == `SRAI_INST) begin // SRAI
                             alu_op_group <= `SHIFT_INST;
                             op <= `SRAI;
                             rs1_addr <= instruction[19:15];
@@ -519,12 +567,12 @@ module instruction_decoder(
                             pc_increment <= 1'b1;
                             memory_we <= 1'b0;
                             memory_re <= 1'b0;
-                            low_imm <= {7'h00, instruction[24:20]};
+                            low_imm <= {6'h00, instruction[25:20]};
                             upper_imm <= 20'h0;
                             fence_sig <= 8'h00;
                             fence_mode <= 4'h0;
                         end
-                        else if (funct7 == `SRLI_INST) begin // SRLI
+                        else if (funct7[6:1] == `SRLI_INST) begin // SRLI
                             alu_op_group <= `SHIFT_INST;
                             op <= `SRLI;
                             rs1_addr <= instruction[19:15];
@@ -535,7 +583,7 @@ module instruction_decoder(
                             pc_increment <= 1'b1;
                             memory_we <= 1'b0;
                             memory_re <= 1'b0;
-                            low_imm <= {7'h00, instruction[24:20]};
+                            low_imm <= {6'h00, instruction[25:20]};
                             upper_imm <= 20'h0;
                             fence_sig <= 8'h00;
                             fence_mode <= 4'h0;
@@ -551,7 +599,7 @@ module instruction_decoder(
                             pc_increment <= 1'b1;
                             memory_we <= 1'b0;
                             memory_re <= 1'b0;
-                            low_imm <= {7'h00, instruction[24:20]};
+                            low_imm <= {6'h00, instruction[25:20]};
                             upper_imm <= 20'h0;
                             fence_sig <= 8'h00;
                             fence_mode <= 4'h0;
@@ -785,6 +833,244 @@ module instruction_decoder(
                         memory_we <= 1'b0;
                         memory_re <= 1'b0;
                         low_imm <= 12'h0;
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                endcase
+            end
+            `OP_IMM_32_INST: begin
+                case(funct3)
+                    `ADDIW_INST: begin
+                        alu_op_group <= `IMM_32_INST;
+                        op <= `ADDIW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b0;
+                        low_imm <= instruction[31:20];
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                    `SLLIW_INST: begin
+                        alu_op_group <= `IMM_32_INST;
+                        op <= `SLLIW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b0;
+                        low_imm <= {7'h00, instruction[24:20]};
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                    `SRIW_INST: begin
+                        if (funct7 == `SRAIW_INST) begin // SRAI
+                            alu_op_group <= `IMM_32_INST;
+                            op <= `SRAIW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else if (funct7 == `SRLIW_INST) begin // SRLI
+                            alu_op_group <= `IMM_32_INST;
+                            op <= `SRLIW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else begin // SRLIW as default
+                            alu_op_group <= `IMM_32_INST;
+                            op <= `SRLIW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                    end
+                    default: begin
+                        alu_op_group <= `IMM_32_INST;
+                        op <= `ADDIW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b0;
+                        low_imm <= instruction[31:20];
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                endcase
+            end
+            `OP_32_INST: begin
+                case(funct3)
+                    `ADD_SUBW_INST: begin
+                        if(funct7 == `ADDW_INST) begin
+                            alu_op_group <= `RR_32_INST;
+                            op <= `ADDW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= instruction[24:20];
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= 12'h0;
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else if (funct7 == `SUBW_INST) begin
+                            alu_op_group <= `RR_32_INST;
+                            op <= `SUBW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= instruction[24:20];
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= 12'h0;
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else begin // Default to ADD
+                            alu_op_group <= `RR_32_INST;
+                            op <= `ADDW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= instruction[24:20];
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= 12'h0;
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                    end
+                    `SLLW_INST: begin
+                        alu_op_group <= `RR_32_INST;
+                        op <= `SLLW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b0;
+                        low_imm <= {7'h00, instruction[24:20]};
+                        upper_imm <= 20'h0;
+                        fence_sig <= 8'h00;
+                        fence_mode <= 4'h0;
+                    end
+                    `SRW_INST: begin
+                        if (funct7 == `SRAW_INST) begin // SRAI
+                            alu_op_group <= `RR_32_INST;
+                            op <= `SRAW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else if (funct7 == `SRLW_INST) begin // SRLI
+                            alu_op_group <= `RR_32_INST;
+                            op <= `SRLW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                        else begin // SRLIW as default
+                            alu_op_group <= `RR_32_INST;
+                            op <= `SRLW;
+                            rs1_addr <= instruction[19:15];
+                            rs2_addr <= 5'h0;
+                            rd_addr <= instruction[11:7];
+                            rfile_we <= 1'b1;
+                            pc_we <= 1'b0;
+                            pc_increment <= 1'b1;
+                            memory_we <= 1'b0;
+                            memory_re <= 1'b0;
+                            low_imm <= {7'h00, instruction[24:20]};
+                            upper_imm <= 20'h0;
+                            fence_sig <= 8'h00;
+                            fence_mode <= 4'h0;
+                        end
+                    end
+                    default: begin
+                        alu_op_group <= `RR_32_INST;
+                        op <= `ADDW;
+                        rs1_addr <= instruction[19:15];
+                        rs2_addr <= 5'h0;
+                        rd_addr <= instruction[11:7];
+                        rfile_we <= 1'b1;
+                        pc_we <= 1'b0;
+                        pc_increment <= 1'b1;
+                        memory_we <= 1'b0;
+                        memory_re <= 1'b0;
+                        low_imm <= instruction[31:20];
                         upper_imm <= 20'h0;
                         fence_sig <= 8'h00;
                         fence_mode <= 4'h0;
