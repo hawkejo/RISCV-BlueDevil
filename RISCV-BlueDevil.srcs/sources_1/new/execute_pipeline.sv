@@ -55,8 +55,6 @@ module execute_pipeline(
     input rst
     );
     
-    //reg load_inst;
-    
     // Handle stall signal
     always_comb begin
         // Memory hazards
@@ -64,10 +62,10 @@ module execute_pipeline(
             stall = 1'b1;
         end
         // ALU hazards
-        else if((rd_addr_out == rs1_addr_in) && (rd_addr_out != 5'h00) /*&& !load_inst*/) begin
+        else if((rd_addr_out == rs1_addr_in) && (rd_addr_out != 5'h00)) begin
             stall = 1'b1;
         end
-        else if((rd_addr_out == rs2_addr_in) && (rd_addr_out != 5'h00) /*&& !load_inst*/) begin
+        else if((rd_addr_out == rs2_addr_in) && (rd_addr_out != 5'h00)) begin
             stall = 1'b1;
         end
         else begin

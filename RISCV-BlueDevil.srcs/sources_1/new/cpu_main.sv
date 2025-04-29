@@ -197,7 +197,7 @@ module cpu_main(
         .new_pc_in(alu_pc_out),
         .io_out_addr_in(alu_io_out_addr),
         .rs1_addr_in(rs1_addr_out), 
-        .rs2_addr_in(rs2_addr_in),
+        .rs2_addr_in(rs2_addr_out),
         .rd_addr_in(rd_addr_dec_out),
         .rfile_we_in(rfile_we_dec_out),
         .pc_we_in(pc_we_dec_out),
