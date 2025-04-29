@@ -393,7 +393,7 @@ module instruction_decoder(
                         end
                     `SH_INST: begin
                         alu_op_group = `LDST_INST;
-                        op = `SB;
+                        op = `SH;
                         rs1_addr = instruction[19:15];
                         rs2_addr = instruction[24:20];
                         rd_addr = 5'h0;

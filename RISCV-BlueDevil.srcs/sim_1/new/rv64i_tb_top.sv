@@ -85,6 +85,9 @@ module rv64i_tb_top();
             (startAddr+ 64'h40):    instruction = {12'h7F0, 5'd08,`ADDI_INST,5'd09,`OP_IMM_INST};       // addi x9,x8,#0x7f0
             (startAddr+ 64'h50):    instruction = {`ADD_INST,5'd09,5'd07,`ADD_SUB_INST,5'd10,`OP_INST}; // add x10,x7,x9
             (startAddr+ 64'h60):    instruction = {7'h00,5'd10,5'd00,`SD_INST,5'h00,`STORE_INST};       // sd 0(x0),x10
+            (startAddr+ 64'h70):    instruction = {7'h00,5'd10,5'd00,`SW_INST,5'h00,`STORE_INST};       // sw 0(x0),x10
+            (startAddr+ 64'h80):    instruction = {7'h00,5'd10,5'd00,`SH_INST,5'h00,`STORE_INST};       // sh 0(x0),x10
+            (startAddr+ 64'h90):    instruction = {7'h00,5'd10,5'd00,`SB_INST,5'h00,`STORE_INST};       // sb 0(x0),x10
             
             default:            instruction = {12'h000, 5'd00,`ADDI_INST,5'd00,`OP_IMM_INST};       //addi x0,x0,x0 ; nop
         endcase
