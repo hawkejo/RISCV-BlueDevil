@@ -175,47 +175,62 @@ module alu(
             end
             `LDST_INST: begin
                 case (op)
+                    `LD: begin
+                        io_in_addr = rs1 + sign_xt_low_imm;
+                        io_out_addr = 0;
+                        rd = mem_in;
+                    end
                     `LW: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {mem_in[31:0]};
+                        rd = {{32{mem_in[31]}}, mem_in[31:0]};
+                    end
+                    `LWU: begin
+                        io_in_addr = rs1 + sign_xt_low_imm;
+                        io_out_addr = 0;
+                        rd = {32'h0, mem_in[31:0]};
                     end
                     `LH: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {{16{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
+                        rd = {{48{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
                     end
                     `LHU: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {16'h0, mem_in[15:0]};
+                        rd = {48'h0, mem_in[15:0]};
                     end
                     `LB: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {{24{mem_in[15]}}, mem_in[7:0]};
+                        rd = {{56{mem_in[15]}}, mem_in[7:0]};
                     end
                     `LBU: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {24'h0, mem_in[7:0]};
+                        rd = {56'h0, mem_in[7:0]};
                     end
                     // rd is always wired to the I/O pins on the processor and
                     // is controlled by the write enable signal from the instruction decoder
-                    `SW: begin
+                    `SD: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
                         rd = rs2;
                     end
+                    `SW: begin
+                        io_in_addr = 0;
+                        io_out_addr = rs1 + sign_xt_low_imm;
+                        rd = {32'h0, rs2[31:0]};
+                    end
                     `SH: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
-                        rd = {16'h0, rs2[15:0]};
+                        rd = {48'h0, rs2[15:0]};
                     end
                     `SB: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
-                        rd = {24'h0, rs2[7:0]};
+                        rd = {56'h0, rs2[7:0]};
                     end
                     default: begin
                         rd = ~(`XLEN'h32);

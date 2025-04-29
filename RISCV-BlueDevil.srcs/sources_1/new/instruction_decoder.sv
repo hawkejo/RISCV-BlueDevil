@@ -868,7 +868,7 @@ module instruction_decoder(
                 pc_increment <= 1'b1;
                 memory_we <= 1'b0;
                 memory_re <= 1'b0;
-                low_imm <= instruction[`MAX_XLEN_INDEX:20];
+                low_imm <= instruction[`IALIGN-1:20];
                 upper_imm <= 20'h0;
                 fence_sig <= 8'h00;
                 fence_mode <= 4'h0;

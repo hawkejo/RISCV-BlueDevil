@@ -57,7 +57,7 @@ module cpu_main(
     
     // Instruction Fetch
     wire [`IALIGN-1:0] instruction_f_out;
-    wire [`IALIGN-1:0] pc_next_f_in;
+    wire [`MAX_XLEN_INDEX:0] pc_next_f_in;
     wire decode_invalid;
     
     fetch_pipeline pipe_f0(
@@ -110,7 +110,7 @@ module cpu_main(
     wire [3:0] fence_mode_dec_out;
     
     wire [`IALIGN-1:0] instruction_d_out;
-    wire [`IALIGN-1:0] dec_current_pc_out;
+    wire [`MAX_XLEN_INDEX:0] dec_current_pc_out;
     
     decode_pipeline pipe_d0(
         // Pipeline signals
