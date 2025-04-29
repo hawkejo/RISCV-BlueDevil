@@ -18,7 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module execute_pipeline(
     output reg [`MAX_XLEN_INDEX:0] rd_out, new_pc_out, io_out_addr_out,
@@ -54,31 +55,21 @@ module execute_pipeline(
     input rst
     );
     
-    //reg load_inst;
-    
     // Handle stall signal
     always_comb begin
         // Memory hazards
         if((current_inst_in[6:0] == `LOAD_INST) && !mem_ready) begin
             stall = 1'b1;
-//            load_inst = 1'b1;
         end
-//        else if(load_inst && !mem_ready) begin
-//            stall = 1'b1;
-//            load_inst = 1'b1;
-//        end
         // ALU hazards
-        else if((rd_addr_out == rs1_addr_in) && (rd_addr_out != 5'h00) /*&& !load_inst*/) begin
+        else if((rd_addr_out == rs1_addr_in) && (rd_addr_out != 5'h00)) begin
             stall = 1'b1;
-//            load_inst = 1'b0;
         end
-        else if((rd_addr_out == rs2_addr_in) && (rd_addr_out != 5'h00) /*&& !load_inst*/) begin
+        else if((rd_addr_out == rs2_addr_in) && (rd_addr_out != 5'h00)) begin
             stall = 1'b1;
-//            load_inst = 1'b0;
         end
         else begin
             stall = 1'b0;
-//            load_inst = 1'b0;
         end
     end
     
@@ -94,7 +85,7 @@ module execute_pipeline(
             invalid = 1'b1;
         end
         else begin
-            invalid = 1'b1;
+            invalid = 1'b0;
         end
     end
     
@@ -103,7 +94,7 @@ module execute_pipeline(
         if(~rst) begin
             rd_out              <= `XLEN'h0;
             io_out_addr_out     <= `XLEN'h0;
-            new_pc_out          <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h8;
+            new_pc_out          <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h4;
             rd_addr_out         <= 5'h00;
             rfile_we_out        <= 1'b0;
             pc_we_out           <= 1'b0;
@@ -112,7 +103,7 @@ module execute_pipeline(
             ebreak_out          <= 1'b0;
             fence_sig_out       <= 8'b0000_0000;
             fence_mode_out      <= 4'b0000;
-            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h8;
+            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h8;
             current_inst_out    <= `IALIGN'h0000_0013;
         end
         else if(stall) begin

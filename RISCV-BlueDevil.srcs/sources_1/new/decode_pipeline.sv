@@ -18,8 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
-`include "rv32i_inst.vh"
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module decode_pipeline(
     // Pipeline signals
@@ -66,26 +66,6 @@ module decode_pipeline(
     input stall
     );
     
-    // Initialize to a modified NOP instruction
-    initial begin
-        rs1_addr_out        <= 5'h00;
-        rs2_addr_out        <= 5'h00;
-        rd_addr_out         <= 5'h00;
-        rfile_we_out        <= 1'b0;
-        pc_we_out           <= 1'b0;
-        pc_increment_out    <= 1'b0;
-        memory_we_out       <= 1'b0;
-        memory_re_out       <= 1'b0;
-        low_imm_out         <= 12'h000;
-        alu_op_group_out    <= `IMM_INST;
-        op_out              <= `ADDI;
-        upper_imm_out       <= 20'h0_0000;
-        fence_sig_out       <= 8'b0000_0000;
-        fence_mode_out      <= 4'b0000;
-        current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h4;
-        current_inst_out    <= `IALIGN'h0000_0013;
-    end
-    
     always_ff @(posedge clk, negedge rst) begin
         if(~rst) begin
             rs1_addr_out        <= 5'h00;
@@ -102,7 +82,7 @@ module decode_pipeline(
             upper_imm_out       <= 20'h0_0000;
             fence_sig_out       <= 8'b0000_0000;
             fence_mode_out      <= 4'b0000;
-            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET - `XLEN'h4;
+            current_pc_out      <= (~`XLEN'h0) - `STARTUP_OFFSET + `XLEN'h12;
             current_inst_out    <= `IALIGN'h0000_0013;
         end
         else if(stall) begin

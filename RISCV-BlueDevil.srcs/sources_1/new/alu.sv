@@ -20,7 +20,7 @@
 // Additional Comments: It is noted that ECALL and EBREAK are not fully implemented
 //              as a complete implementation depends on the Zicsr extension.
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
+`include "rv64i.vh"
 
 module alu(
     output reg [`MAX_XLEN_INDEX:0] rd,          // Output value
@@ -46,21 +46,21 @@ module alu(
     reg c;
     reg [`MAX_XLEN_INDEX:0] res;
     
-    assign sign_xt_low_imm = {{20{low_imm[11]}}, low_imm};
+    assign sign_xt_low_imm = {{52{low_imm[11]}}, low_imm};
     assign full_upper_imm = {upper_imm, 12'h000};
     
     always_comb begin
         case (alu_op_group)
             `IMM_INST: begin
                 case (op)
-                    `ADDI: begin rd = rs1 + sign_xt_low_imm; end
-                    `SLTI: begin rd = ($signed(rs1) < $signed(sign_xt_low_imm))?
+                    `ADDI: begin rd = rs1 + {{52{low_imm[11]}}, low_imm}; end
+                    `SLTI: begin rd = ($signed(rs1) < $signed({{52{low_imm[11]}}, low_imm}))?
                         `XLEN'b1:`XLEN'b0; end
-                    `SLTIU: begin rd = ($unsigned(rs1) < $unsigned(sign_xt_low_imm))?
+                    `SLTIU: begin rd = ($unsigned(rs1) < $unsigned({{52{low_imm[11]}}, low_imm}))?
                         `XLEN'b1:`XLEN'b0; end
-                    `ANDI: begin rd = rs1 & sign_xt_low_imm; end
-                    `ORI: begin rd = rs1 | sign_xt_low_imm; end
-                    `XORI: begin rd = rs1 ^ sign_xt_low_imm; end
+                    `ANDI: begin rd = rs1 & {{52{low_imm[11]}}, low_imm}; end
+                    `ORI: begin rd = rs1 | {{52{low_imm[11]}}, low_imm}; end
+                    `XORI: begin rd = rs1 ^ {{52{low_imm[11]}}, low_imm}; end
                     default: begin rd = ~(`XLEN'h0); end
                 endcase
                 pc_out = 0;
@@ -71,13 +71,69 @@ module alu(
             end
             `SHIFT_INST: begin
                 case (op)
-                    `SLLI: begin rd = rs1 << {low_imm[4:0]}; end
-                    `SRLI: begin rd = rs1 >> {low_imm[4:0]}; end
-                    `SRAI: begin rd = rs1 >>> {low_imm[4:0]}; end
-                    `SLL:  begin rd = rs1 << {rs2[4:0]}; end
-                    `SRL:  begin rd = rs1 >> {rs2[4:0]}; end
-                    `SRA:  begin rd = rs1 >>> {rs2[4:0]}; end
+                    `SLLI: begin rd = rs1 << low_imm[5:0]; end
+                    `SRLI: begin rd = rs1 >> low_imm[5:0]; end
+                    `SRAI: begin rd = rs1 >>> low_imm[5:0]; end
+                    `SLL:  begin rd = rs1 << rs2[5:0]; end
+                    `SRL:  begin rd = rs1 >> rs2[5:0]; end
+                    `SRA:  begin rd = rs1 >>> rs2[5:0]; end
                     default: begin rd = ~(`XLEN'h1); end
+                endcase
+                pc_out = 0;
+                io_in_addr = 0;
+                io_out_addr = 0;
+                ecall = 0;
+                ebreak = 0;
+            end
+            `IMM_32_INST: begin
+                case (op)
+                    `ADDIW: begin
+                        rd[31:0] = rs1[31:0] + {{20{low_imm[11]}}, low_imm};
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SLLIW: begin
+                        rd[31:0] = rs1[31:0] << low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRLIW: begin
+                        rd[31:0] = rs1[31:0] >> low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRAIW: begin
+                        rd[31:0] = rs1[31:0] >>> low_imm[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    default: begin rd = ~(`XLEN'h42); end
+                endcase
+                pc_out = 0;
+                io_in_addr = 0;
+                io_out_addr = 0;
+                ecall = 0;
+                ebreak = 0;
+            end
+            `RR_32_INST: begin
+                case (op)
+                    `ADDW: begin
+                        rd[31:0] = rs1[31:0] + rs2[31:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SUBW: begin
+                        rd[31:0] = rs1[31:0] - rs2[31:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                        end
+                    `SLLW: begin
+                        rd[31:0] = rs1[31:0] << rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRLW: begin
+                        rd[31:0] = rs1[31:0] >> rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    `SRAW: begin
+                        rd[31:0] = rs1[31:0] >>> rs2[4:0];
+                        rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
+                    end
+                    default: begin rd = ~(`XLEN'h43); end
                 endcase
                 pc_out = 0;
                 io_in_addr = 0;
@@ -87,8 +143,8 @@ module alu(
             end
             `UI_INST: begin
                 case (op)
-                    `LUI:   begin rd = full_upper_imm; end
-                    `AUIPC: begin rd = (full_upper_imm + pc_in) & (~12'hFFF); 
+                    `LUI:   begin rd = {upper_imm, 12'h000}; end
+                    `AUIPC: begin rd = ({upper_imm, 12'h000} + pc_in) & (~12'hFFF); 
                         end
                     default: begin rd = ~(`XLEN'h2); end
                 endcase
@@ -175,47 +231,62 @@ module alu(
             end
             `LDST_INST: begin
                 case (op)
+                    `LD: begin
+                        io_in_addr = rs1 + sign_xt_low_imm;
+                        io_out_addr = 0;
+                        rd = mem_in;
+                    end
                     `LW: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {mem_in[31:0]};
+                        rd = {{32{mem_in[31]}}, mem_in[31:0]};
+                    end
+                    `LWU: begin
+                        io_in_addr = rs1 + sign_xt_low_imm;
+                        io_out_addr = 0;
+                        rd = {32'h0, mem_in[31:0]};
                     end
                     `LH: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {{16{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
+                        rd = {{48{mem_in[15]}}, mem_in[15:0]};  // There is no nice way to do this...
                     end
                     `LHU: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {16'h0, mem_in[15:0]};
+                        rd = {48'h0, mem_in[15:0]};
                     end
                     `LB: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {{24{mem_in[15]}}, mem_in[7:0]};
+                        rd = {{56{mem_in[15]}}, mem_in[7:0]};
                     end
                     `LBU: begin
                         io_in_addr = rs1 + sign_xt_low_imm;
                         io_out_addr = 0;
-                        rd = {24'h0, mem_in[7:0]};
+                        rd = {56'h0, mem_in[7:0]};
                     end
                     // rd is always wired to the I/O pins on the processor and
                     // is controlled by the write enable signal from the instruction decoder
-                    `SW: begin
+                    `SD: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
                         rd = rs2;
                     end
+                    `SW: begin
+                        io_in_addr = 0;
+                        io_out_addr = rs1 + sign_xt_low_imm;
+                        rd = {32'h0, rs2[31:0]};
+                    end
                     `SH: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
-                        rd = {16'h0, rs2[15:0]};
+                        rd = {48'h0, rs2[15:0]};
                     end
                     `SB: begin
                         io_in_addr = 0;
                         io_out_addr = rs1 + sign_xt_low_imm;
-                        rd = {24'h0, rs2[7:0]};
+                        rd = {56'h0, rs2[7:0]};
                     end
                     default: begin
                         rd = ~(`XLEN'h32);

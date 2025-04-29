@@ -18,8 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
-`include "rv32i_inst.vh"
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module fetch_pipeline(
     output reg [`IALIGN-1:0] ifetch_out,
@@ -32,12 +32,6 @@ module fetch_pipeline(
     input stall,
     input invalid
     );
-    
-    initial begin
-        ifetch_out  <= `IALIGN'h0000_0013;
-        pc_next_out <= (~`XLEN'h0) - `STARTUP_OFFSET;
-        decode_invalid <= 1'b0;
-    end
     
     always_ff @(posedge clk, negedge rst) begin
         if(~rst) begin

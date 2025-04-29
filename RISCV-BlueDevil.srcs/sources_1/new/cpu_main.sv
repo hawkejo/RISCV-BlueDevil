@@ -21,8 +21,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
-`include "rv32i_inst.vh"
+`include "rv64i.vh"
+`include "rv64i_inst.vh"
 
 module cpu_main(
     output [`MAX_XLEN_INDEX:0] io_in_addr,
@@ -38,26 +38,10 @@ module cpu_main(
     input clk, rst,
     input ebreak_clear
 );
-//    wire [`MAX_XLEN_INDEX:0]  pc_write_data;
-//    wire [`MAX_XLEN_INDEX:0] rs1_data, rs2_data, store_rd_data;
-    
-//    wire [`IMM_MAX_INDEX:0] low_imm;
-//    wire [`UPPER_IMM_MAX_INDEX:`UPPER_IMM_LOW_INDEX] upper_imm;
-    
-//    wire [`REG_MAX_ADDR:0] rs1_addr, rs2_addr, rd_addr;
-    
-//    wire [`OPS_MAX_INDEX:0] op;
-//    wire [`OP_GROUP_MAX_INDEX:0] op_group;
-    
-//    wire ebreak_set;
-//    wire is_invalid;
-//    wire set_stall;
-    
-    
-    
+
     // Instruction Fetch
     wire [`IALIGN-1:0] instruction_f_out;
-    wire [`IALIGN-1:0] pc_next_f_in;
+    wire [`MAX_XLEN_INDEX:0] pc_next_f_in;
     wire decode_invalid;
     
     fetch_pipeline pipe_f0(
@@ -110,7 +94,7 @@ module cpu_main(
     wire [3:0] fence_mode_dec_out;
     
     wire [`IALIGN-1:0] instruction_d_out;
-    wire [`IALIGN-1:0] dec_current_pc_out;
+    wire [`MAX_XLEN_INDEX:0] dec_current_pc_out;
     
     decode_pipeline pipe_d0(
         // Pipeline signals
@@ -213,7 +197,7 @@ module cpu_main(
         .new_pc_in(alu_pc_out),
         .io_out_addr_in(alu_io_out_addr),
         .rs1_addr_in(rs1_addr_out), 
-        .rs2_addr_in(rs2_addr_in),
+        .rs2_addr_in(rs2_addr_out),
         .rd_addr_in(rd_addr_dec_out),
         .rfile_we_in(rfile_we_dec_out),
         .pc_we_in(pc_we_dec_out),

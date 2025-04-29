@@ -18,7 +18,7 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv32i.vh"
+`include "rv64i.vh"
 
 module store_pipeline(
     output reg [`MAX_XLEN_INDEX:0] rd_out,
