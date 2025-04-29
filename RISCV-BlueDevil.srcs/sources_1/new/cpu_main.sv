@@ -38,23 +38,7 @@ module cpu_main(
     input clk, rst,
     input ebreak_clear
 );
-//    wire [`MAX_XLEN_INDEX:0]  pc_write_data;
-//    wire [`MAX_XLEN_INDEX:0] rs1_data, rs2_data, store_rd_data;
-    
-//    wire [`IMM_MAX_INDEX:0] low_imm;
-//    wire [`UPPER_IMM_MAX_INDEX:`UPPER_IMM_LOW_INDEX] upper_imm;
-    
-//    wire [`REG_MAX_ADDR:0] rs1_addr, rs2_addr, rd_addr;
-    
-//    wire [`OPS_MAX_INDEX:0] op;
-//    wire [`OP_GROUP_MAX_INDEX:0] op_group;
-    
-//    wire ebreak_set;
-//    wire is_invalid;
-//    wire set_stall;
-    
-    
-    
+
     // Instruction Fetch
     wire [`IALIGN-1:0] instruction_f_out;
     wire [`MAX_XLEN_INDEX:0] pc_next_f_in;

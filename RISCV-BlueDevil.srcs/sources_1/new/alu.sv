@@ -46,21 +46,21 @@ module alu(
     reg c;
     reg [`MAX_XLEN_INDEX:0] res;
     
-    assign sign_xt_low_imm = {{20{low_imm[11]}}, low_imm};
+    assign sign_xt_low_imm = {{52{low_imm[11]}}, low_imm};
     assign full_upper_imm = {upper_imm, 12'h000};
     
     always_comb begin
         case (alu_op_group)
             `IMM_INST: begin
                 case (op)
-                    `ADDI: begin rd = rs1 + sign_xt_low_imm; end
-                    `SLTI: begin rd = ($signed(rs1) < $signed(sign_xt_low_imm))?
+                    `ADDI: begin rd = rs1 + {{52{low_imm[11]}}, low_imm}; end
+                    `SLTI: begin rd = ($signed(rs1) < $signed({{52{low_imm[11]}}, low_imm}))?
                         `XLEN'b1:`XLEN'b0; end
-                    `SLTIU: begin rd = ($unsigned(rs1) < $unsigned(sign_xt_low_imm))?
+                    `SLTIU: begin rd = ($unsigned(rs1) < $unsigned({{52{low_imm[11]}}, low_imm}))?
                         `XLEN'b1:`XLEN'b0; end
-                    `ANDI: begin rd = rs1 & sign_xt_low_imm; end
-                    `ORI: begin rd = rs1 | sign_xt_low_imm; end
-                    `XORI: begin rd = rs1 ^ sign_xt_low_imm; end
+                    `ANDI: begin rd = rs1 & {{52{low_imm[11]}}, low_imm}; end
+                    `ORI: begin rd = rs1 | {{52{low_imm[11]}}, low_imm}; end
+                    `XORI: begin rd = rs1 ^ {{52{low_imm[11]}}, low_imm}; end
                     default: begin rd = ~(`XLEN'h0); end
                 endcase
                 pc_out = 0;
@@ -71,12 +71,12 @@ module alu(
             end
             `SHIFT_INST: begin
                 case (op)
-                    `SLLI: begin rd = rs1 << {low_imm[5:0]}; end
-                    `SRLI: begin rd = rs1 >> {low_imm[5:0]}; end
-                    `SRAI: begin rd = rs1 >>> {low_imm[5:0]}; end
-                    `SLL:  begin rd = rs1 << {rs2[5:0]}; end
-                    `SRL:  begin rd = rs1 >> {rs2[5:0]}; end
-                    `SRA:  begin rd = rs1 >>> {rs2[5:0]}; end
+                    `SLLI: begin rd = rs1 << low_imm[5:0]; end
+                    `SRLI: begin rd = rs1 >> low_imm[5:0]; end
+                    `SRAI: begin rd = rs1 >>> low_imm[5:0]; end
+                    `SLL:  begin rd = rs1 << rs2[5:0]; end
+                    `SRL:  begin rd = rs1 >> rs2[5:0]; end
+                    `SRA:  begin rd = rs1 >>> rs2[5:0]; end
                     default: begin rd = ~(`XLEN'h1); end
                 endcase
                 pc_out = 0;
@@ -88,7 +88,7 @@ module alu(
             `IMM_32_INST: begin
                 case (op)
                     `ADDIW: begin
-                        rd[31:0] = rs1[31:0] + sign_xt_low_imm[31:0];
+                        rd[31:0] = rs1[31:0] + {{20{low_imm[11]}}, low_imm};
                         rd[`MAX_XLEN_INDEX:32] = {32{rd[31]}};
                         end
                     `SLLIW: begin
@@ -143,8 +143,8 @@ module alu(
             end
             `UI_INST: begin
                 case (op)
-                    `LUI:   begin rd = full_upper_imm; end
-                    `AUIPC: begin rd = (full_upper_imm + pc_in) & (~12'hFFF); 
+                    `LUI:   begin rd = {upper_imm, 12'h000}; end
+                    `AUIPC: begin rd = ({upper_imm, 12'h000} + pc_in) & (~12'hFFF); 
                         end
                     default: begin rd = ~(`XLEN'h2); end
                 endcase

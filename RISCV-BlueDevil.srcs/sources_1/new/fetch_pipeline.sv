@@ -33,12 +33,6 @@ module fetch_pipeline(
     input invalid
     );
     
-    initial begin
-        ifetch_out  <= `IALIGN'h0000_0013;
-        pc_next_out <= (~`XLEN'h0) - `STARTUP_OFFSET;
-        decode_invalid <= 1'b0;
-    end
-    
     always_ff @(posedge clk, negedge rst) begin
         if(~rst) begin
             ifetch_out  <= `IALIGN'h0000_0013;
