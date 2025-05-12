@@ -77,7 +77,7 @@ module rv64i_tb_top();
     always_comb begin
         case(pc_out)
             // Something to test basic functionality
-            // This should verify the instructions: addi, lui, slli, add, sd
+            // This should verify the instructions: addi, lui, slli, add, sd, sw, hs, sb
             startAddr:              instruction = {20'h0_F0F0,5'd05,`LUI_INST};                         // lui x5,#0x0F0F0
             (startAddr+ 64'h10):     instruction = {12'h7F0, 5'd05,`ADDI_INST,5'd06,`OP_IMM_INST};       // addi x6,x5,#0x7f0
             (startAddr+ 64'h20):     instruction = {6'h00,6'd32,5'd06,`SLLI_INST,5'd07,`OP_IMM_INST};    // slli x7,x6,#32
