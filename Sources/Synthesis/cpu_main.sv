@@ -21,8 +21,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv64i.vh"
-`include "rv64i_inst.vh"
+`include "rv64i.svh"
+`include "rv64i_inst.svh"
 
 module cpu_main(
     output [`MAX_XLEN_INDEX:0] io_in_addr,

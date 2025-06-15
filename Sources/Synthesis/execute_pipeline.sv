@@ -18,8 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv64i.vh"
-`include "rv64i_inst.vh"
+`include "rv64i.svh"
+`include "rv64i_inst.svh"
 
 module execute_pipeline(
     output reg [`MAX_XLEN_INDEX:0] rd_out, new_pc_out, io_out_addr_out,

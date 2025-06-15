@@ -29,14 +29,13 @@ proc checkRequiredFiles { origin_dir} {
  "[file normalize "$origin_dir/Sources/Synthesis/register_file.sv"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/store_pipeline.sv"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/nexys4ddr_interface.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/rv32i.svh"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/rv32i_inst.svh"]"\
- "[file normalize "$origin_dir/Sources/Constraints/nexys4ddr.xdc"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/rv32i.svh"]"\
  "[file normalize "$origin_dir/Sources/Simulation/rv64i_tb_top.sv"]"\
  "[file normalize "$origin_dir/Sources/Simulation/rv32i_regfile_tb_driver.sv"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"]"\
  "[file normalize "$origin_dir/Sources/Simulation/rv32i_tb_top.sv"]"\
  "[file normalize "$origin_dir/Sources/Simulation/rv32i_alu_tb_driver.sv"]"\
- "[file normalize "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -160,6 +159,7 @@ set_property -name "simulator.xcelium_gcc_version" -value "9.3.0" -objects $obj
 set_property -name "simulator.xcelium_version" -value "24.03.003" -objects $obj
 set_property -name "simulator.xsim_gcc_version" -value "9.3.0" -objects $obj
 set_property -name "simulator.xsim_version" -value "2024.2" -objects $obj
+set_property -name "simulator_language" -value "Mixed" -objects $obj
 set_property -name "sim_compile_state" -value "1" -objects $obj
 set_property -name "use_inline_hdl_ip" -value "1" -objects $obj
 
@@ -182,8 +182,8 @@ set files [list \
  [file normalize "${origin_dir}/Sources/Synthesis/register_file.sv"] \
  [file normalize "${origin_dir}/Sources/Synthesis/store_pipeline.sv"] \
  [file normalize "${origin_dir}/Sources/Synthesis/nexys4ddr_interface.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/rv32i.svh"] \
  [file normalize "${origin_dir}/Sources/Synthesis/rv32i_inst.svh"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/rv32i.svh"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -247,14 +247,14 @@ set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 set_property -name "used_in" -value "synthesis implementation" -objects $file_obj
 set_property -name "used_in_simulation" -value "0" -objects $file_obj
 
-set file "$origin_dir/Sources/Synthesis/rv32i.svh"
+set file "$origin_dir/Sources/Synthesis/rv32i_inst.svh"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
 set_property -name "is_enabled" -value "0" -objects $file_obj
 set_property -name "is_global_include" -value "1" -objects $file_obj
 
-set file "$origin_dir/Sources/Synthesis/rv32i_inst.svh"
+set file "$origin_dir/Sources/Synthesis/rv32i.svh"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
@@ -278,13 +278,7 @@ if {[string equal [get_filesets -quiet constrs_1] ""]} {
 # Set 'constrs_1' fileset object
 set obj [get_filesets constrs_1]
 
-# Add/Import constrs file and set constrs file properties
-set file "[file normalize "$origin_dir/Sources/Constraints/nexys4ddr.xdc"]"
-set file_added [add_files -norecurse -fileset $obj [list $file]]
-set file "$origin_dir/Sources/Constraints/nexys4ddr.xdc"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets constrs_1] [list "*$file"]]
-set_property -name "file_type" -value "XDC" -objects $file_obj
+# Empty (no sources present)
 
 # Set 'constrs_1' fileset properties
 set obj [get_filesets constrs_1]
@@ -300,9 +294,9 @@ set obj [get_filesets sim_1]
 set files [list \
  [file normalize "${origin_dir}/Sources/Simulation/rv64i_tb_top.sv"] \
  [file normalize "${origin_dir}/Sources/Simulation/rv32i_regfile_tb_driver.sv"] \
+ [file normalize "${origin_dir}/Sources/Simulation/rv32i_instdec_tb_driver.sv"] \
  [file normalize "${origin_dir}/Sources/Simulation/rv32i_tb_top.sv"] \
  [file normalize "${origin_dir}/Sources/Simulation/rv32i_alu_tb_driver.sv"] \
- [file normalize "${origin_dir}/Sources/Simulation/rv32i_instdec_tb_driver.sv"] \
 ]
 add_files -norecurse -fileset $obj $files
 
@@ -318,6 +312,12 @@ set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 set_property -name "is_enabled" -value "0" -objects $file_obj
 
+set file "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+
 set file "$origin_dir/Sources/Simulation/rv32i_tb_top.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
@@ -325,12 +325,6 @@ set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 set_property -name "is_enabled" -value "0" -objects $file_obj
 
 set file "$origin_dir/Sources/Simulation/rv32i_alu_tb_driver.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-set_property -name "is_enabled" -value "0" -objects $file_obj
-
-set file "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj

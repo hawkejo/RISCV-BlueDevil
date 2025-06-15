@@ -18,7 +18,7 @@
 // Revision 0.1  - Base register file created, but unverified. (JAH: 2025-02-17)
 // Revision 0.01 - File Created
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv64i.vh"
+`include "rv64i.svh"
 
 module register_file(
     output [`MAX_XLEN_INDEX:0] rs1_data, rs2_data,          // Register outputs
