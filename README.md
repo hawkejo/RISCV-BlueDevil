@@ -1,4 +1,6 @@
 # RISCV-BlueDevil
+
+To build this project, make sure the scripts from [barbedo/vivado-git](https://github.com/barbedo/vivado-git) are installed on your system. If that repository is down, it can also be found [here](https://github.com/hawkejo/vivado-git)
 ### RV64I 64-bit integer instruction set
 
 This is an implementation of the RISC-V processor architecture for the CCSU Capstone class. The intent is to create a design that will be scalable and viable for use in production. This branch implements the 64-bit RV64I integer instruction set in a non-pipelined manner.
