@@ -18,20 +18,25 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
- "[file normalize "$origin_dir/Sources/Synthesis/nexys4ddr_interface.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/rv32i.svh"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/rv64i_inst.svh"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/rv64i.svh"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/rv32i_inst.svh"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/execute_pipeline.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/store_pipeline.sv"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/alu.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/decode_pipeline.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/fetch_pipeline.sv"]"\
- "[file normalize "$origin_dir/Sources/Synthesis/register_file.sv"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/cpu_main.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/decode_pipeline.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/execute_pipeline.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/fetch_pipeline.sv"]"\
  "[file normalize "$origin_dir/Sources/Synthesis/instruction_decoder.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/register_file.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/store_pipeline.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/nexys4ddr_interface.sv"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/rv32i.svh"]"\
+ "[file normalize "$origin_dir/Sources/Synthesis/rv32i_inst.svh"]"\
  "[file normalize "$origin_dir/Sources/Constraints/nexys4ddr.xdc"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv64i_tb_top.sv"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv32i_regfile_tb_driver.sv"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv32i_tb_top.sv"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv32i_alu_tb_driver.sv"]"\
+ "[file normalize "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"]"\
   ]
   foreach ifile $files {
     if { ![file isfile $ifile] } {
@@ -166,74 +171,36 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/Sources/Synthesis/nexys4ddr_interface.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/rv32i.svh"] \
  [file normalize "${origin_dir}/Sources/Synthesis/rv64i_inst.svh"] \
  [file normalize "${origin_dir}/Sources/Synthesis/rv64i.svh"] \
- [file normalize "${origin_dir}/Sources/Synthesis/rv32i_inst.svh"] \
- [file normalize "${origin_dir}/Sources/Synthesis/execute_pipeline.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/store_pipeline.sv"] \
  [file normalize "${origin_dir}/Sources/Synthesis/alu.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/decode_pipeline.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/fetch_pipeline.sv"] \
- [file normalize "${origin_dir}/Sources/Synthesis/register_file.sv"] \
  [file normalize "${origin_dir}/Sources/Synthesis/cpu_main.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/decode_pipeline.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/execute_pipeline.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/fetch_pipeline.sv"] \
  [file normalize "${origin_dir}/Sources/Synthesis/instruction_decoder.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/register_file.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/store_pipeline.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/nexys4ddr_interface.sv"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/rv32i.svh"] \
+ [file normalize "${origin_dir}/Sources/Synthesis/rv32i_inst.svh"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/Sources/Synthesis/nexys4ddr_interface.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/rv32i.svh"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Verilog Header" -objects $file_obj
-
 set file "$origin_dir/Sources/Synthesis/rv64i_inst.svh"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+set_property -name "is_global_include" -value "1" -objects $file_obj
 
 set file "$origin_dir/Sources/Synthesis/rv64i.svh"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "Verilog Header" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/rv32i_inst.svh"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "Verilog Header" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/execute_pipeline.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/store_pipeline.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_global_include" -value "1" -objects $file_obj
 
 set file "$origin_dir/Sources/Synthesis/alu.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/decode_pipeline.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/fetch_pipeline.sv"
-set file [file normalize $file]
-set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
-set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
-
-set file "$origin_dir/Sources/Synthesis/register_file.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
@@ -243,10 +210,56 @@ set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
 
+set file "$origin_dir/Sources/Synthesis/decode_pipeline.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/execute_pipeline.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/fetch_pipeline.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
 set file "$origin_dir/Sources/Synthesis/instruction_decoder.sv"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/register_file.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/store_pipeline.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/nexys4ddr_interface.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "used_in" -value "synthesis implementation" -objects $file_obj
+set_property -name "used_in_simulation" -value "0" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/rv32i.svh"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+set_property -name "is_global_include" -value "1" -objects $file_obj
+
+set file "$origin_dir/Sources/Synthesis/rv32i_inst.svh"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
+set_property -name "file_type" -value "Verilog Header" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+set_property -name "is_global_include" -value "1" -objects $file_obj
 
 
 # Set 'sources_1' fileset file properties for local files
@@ -284,12 +297,54 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 
 # Set 'sim_1' fileset object
 set obj [get_filesets sim_1]
-# Empty (no sources present)
+set files [list \
+ [file normalize "${origin_dir}/Sources/Simulation/rv64i_tb_top.sv"] \
+ [file normalize "${origin_dir}/Sources/Simulation/rv32i_regfile_tb_driver.sv"] \
+ [file normalize "${origin_dir}/Sources/Simulation/rv32i_tb_top.sv"] \
+ [file normalize "${origin_dir}/Sources/Simulation/rv32i_alu_tb_driver.sv"] \
+ [file normalize "${origin_dir}/Sources/Simulation/rv32i_instdec_tb_driver.sv"] \
+]
+add_files -norecurse -fileset $obj $files
+
+# Set 'sim_1' fileset file properties for remote files
+set file "$origin_dir/Sources/Simulation/rv64i_tb_top.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+
+set file "$origin_dir/Sources/Simulation/rv32i_regfile_tb_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+
+set file "$origin_dir/Sources/Simulation/rv32i_tb_top.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+
+set file "$origin_dir/Sources/Simulation/rv32i_alu_tb_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+
+set file "$origin_dir/Sources/Simulation/rv32i_instdec_tb_driver.sv"
+set file [file normalize $file]
+set file_obj [get_files -of_objects [get_filesets sim_1] [list "*$file"]]
+set_property -name "file_type" -value "SystemVerilog" -objects $file_obj
+set_property -name "is_enabled" -value "0" -objects $file_obj
+
+
+# Set 'sim_1' fileset file properties for local files
+# None
 
 # Set 'sim_1' fileset properties
 set obj [get_filesets sim_1]
 set_property -name "sim_wrapper_top" -value "1" -objects $obj
-set_property -name "top" -value "nexys4ddr_interface" -objects $obj
+set_property -name "top" -value "rv64i_tb_top" -objects $obj
+set_property -name "top_auto_set" -value "0" -objects $obj
 set_property -name "top_lib" -value "xil_defaultlib" -objects $obj
 
 # Set 'utils_1' fileset object
