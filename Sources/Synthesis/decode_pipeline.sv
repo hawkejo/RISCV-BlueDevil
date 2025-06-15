@@ -18,8 +18,8 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-`include "rv64i.vh"
-`include "rv64i_inst.vh"
+`include "rv64i.svh"
+`include "rv64i_inst.svh"
 
 module decode_pipeline(
     // Pipeline signals
