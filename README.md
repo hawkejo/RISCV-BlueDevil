@@ -8,5 +8,3 @@ This processor is intended to be a real-time processor where each instruction ha
 The project was done in the most recent version of Xilinx Vivado, which at the time of creation of this repository is at version 2024.2.2. To use Vivado with Github, reference the following documents provided by AMD (Xilinx) [here](https://adaptivesupport.amd.com/s/article/Revision-Control-with-a-Vivado-Project?language=en_US). While Vivado does not support git commands natively, the repository can be cloned directly. If running synthesis, make sure the setting to allow incremental synthesis is disabled for the first run.
 
 The 32-bit architecture is unverified.
-
-Test stuff.
